@@ -2,8 +2,8 @@ package com.api.autenticacion_gestion.config;
 
 import org.springframework.stereotype.Component;
 
-import com.gestion.dto.UsuarioDTO;
-import com.gestion.models.Usuario;
+import com.api.autenticacion_gestion.dto.UsuarioDTO;
+import com.api.autenticacion_gestion.models.Usuario;
 
 @Component
 public class UsuarioMapper {
