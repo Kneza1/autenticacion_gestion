@@ -2,7 +2,6 @@ package com.api.autenticacion_gestion.controllers;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,13 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.api.autenticacion_gestion.dto.CrearUsuarioRequest;
 import com.api.autenticacion_gestion.dto.UsuarioDTO;
 import com.api.autenticacion_gestion.models.Usuario;
 import com.api.autenticacion_gestion.services.UsuarioService;
-
 import lombok.RequiredArgsConstructor;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo; 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -61,5 +60,23 @@ public class UsuarioController {
         service.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/hateoas/{id}")
+    public UsuarioDTO obtenerHATEOAS(@PathVariable Integer id) { 
+        UsuarioDTO dto = service.buscarUsuarioPorId(id);
+        // Agregar enlaces HATEOAS 
+        dto.add(linkTo(methodOn(UsuarioController.class).obtenerHATEOAS(id)).withSelfRel()); 
+        dto.add(linkTo(methodOn(UsuarioController.class).obtenerTodosHATEOAS()).withRel("todos")); 
+        dto.add(linkTo(methodOn(UsuarioController.class).eliminar(id)).withRel("eliminar")); 
+        return dto;
+    }
+    @GetMapping("/hateoas") 
+    public List<UsuarioDTO> obtenerTodosHATEOAS() { 
+        List<UsuarioDTO> lista = service.listarUsuarios(); 
+            for (UsuarioDTO dto : lista) { 
+            dto.add(linkTo(methodOn(UsuarioController.class).obtenerHATEOAS(dto.getIdUsuario())).withSelfRel()); 
+    } 
+    return lista; 
+} 
 
 }

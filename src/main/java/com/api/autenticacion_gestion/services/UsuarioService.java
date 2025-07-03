@@ -104,8 +104,6 @@ public class UsuarioService {
         return mapper.usuarioToDto(guardado);
     }
 
-
-
     public void eliminarUsuario(Integer id) {
         usuarioRepo.deleteById(id);
     }
